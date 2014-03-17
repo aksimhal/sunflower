@@ -1,9 +1,9 @@
 %% Detect Stem
 close all; 
 inputArraySize = size(croppedFrames);
-figure; 
+%figure; 
 for n = 3:1:inputArraySize(3)
-    outputImg = findStemBase(croppedFrames(:, :, n), true); 
-    imshow(outputImg); title(strcat('frame--', num2str(n))); 
+    outputImg = findStemTop(croppedFrames(:, :, n), true); 
+    %imshow(outputImg); title(strcat('frame--', num2str(n))); 
     pause(1); 
-end 
+end  

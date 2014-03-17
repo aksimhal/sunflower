@@ -22,24 +22,60 @@ BWsdil = imdilate(BWsdil, strel('line', 3, 0));
 % if (showViz)
      figure, imshow(BWsdil), title('dilated gradient mask');
 % end
-% 
-% reverseBWsdil = ~BWsdil;
-% 
-% IL = bwlabel(reverseBWsdil);
-% R = regionprops(reverseBWsdil,'Area', 'centroid');
-% ind = find([R.Area] >= 1500);
-% Iout = ismember(IL,ind);
-% 
-% if (showViz)
-%     imshow(Iout); title('blob removed');
-% end
-% 
-% B = imclose(Iout, se0);
-% B = imclose(B, se90);
-% 
-% if (showViz)
-%     figure; imshow(B); title('open result');
-% end
-% 
-% outputImg = B;
+
+IL = bwlabel(BWsdil);
+R = regionprops(BWsdil,'Area', 'centroid');
+ind = find([R.Area] >= 100);
+Iout = ismember(IL,ind);
+
+if (showViz)
+    imagesc(Iout); title('blobs removed');
+    hold on; 
 end
+
+%% Go up the stem 
+colPos = 571; 
+rowPos = 987; 
+
+while (Iout(rowPos, colPos) ~= true)
+    rightDelta = 0; leftDelta = 0; 
+    while (Iout(rowPos, colPos + rightDelta) ~= true)
+        rightDelta = rightDelta + 1; 
+    end 
+    
+    while (Iout(rowPos, colPos - leftDelta) ~= true)
+        leftDelta = leftDelta + 1; 
+    end 
+    plot(colPos, rowPos, 'g*'); 
+    width = leftDelta + rightDelta; 
+    if (width > 45)
+        rowPos = rowPos - 5; %bring cursor up by five 
+    else 
+        xDisplacement = round((rightDelta - leftDelta)/2); 
+        colPos = colPos + xDisplacement; 
+        rowPos = rowPos - 5; 
+    end 
+    if (Iout(rowPos, colPos) == true) 
+        plot(colPos, rowPos, 'r*'); 
+        %colPos
+        %rowPos
+    end 
+end 
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
