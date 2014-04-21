@@ -4,12 +4,13 @@
 dbstop if error
 
 % These parameters can be moved to a config file if needed
-numOfImages = 45;
+numOfImages = 267;
 folder_path = 'C:\Users\anish\Documents\MATLAB\002C\';
 file_base = 'HUNT';
 file_ext = '.JPG';
 file_path = strcat(folder_path, file_base);
 height = 1080; width = 1920;
+saveImg = true; 
 
 cropStartCol = 480;
 cropEndCol = 1512;
@@ -18,6 +19,8 @@ cropEndRow = 990;
 
 averageRowDifference = zeros(numOfImages, 1); 
 averageColDifference = zeros(numOfImages, 1); 
+averageRowPos = zeros(numOfImages, 1); 
+averageColPos = zeros(numOfImages, 1); 
 
 %Grab Initial Frame
 file_name = strcat(file_path, sprintf('%04d', 1));
@@ -35,7 +38,7 @@ templateStartCol = 220; templateEndCol = 670;
 template = initialFrame(templateStartRow:templateEndRow, ...
     templateStartCol:templateEndCol);
 
-for n=2:1:numOfImages
+for n=2:3:numOfImages
     fprintf('Current Frame: %d \n', n); 
     
     file_name = strcat(file_path, sprintf('%04d', n));
@@ -56,8 +59,10 @@ for n=2:1:numOfImages
     title(strcat('Frame Number : ', num2str(n)));
     
     % Save output as an image
+    if (saveImg); 
     str = strcat('figfiles/', 'frame_', num2str(n));
     saveas(gcf,strcat(str,'.png'));
+    end 
     
     % Aggreate matches and eliminate outliers
     xVals = zeros(numel(matches(1,:)), 1);
@@ -81,6 +86,11 @@ for n=2:1:numOfImages
     
     xVals(outlier_idx) = [];
     yVals(outlier_idx) = [];
+
+    xTVals(outlier_idx) = [];
+    yTVals(outlier_idx) = [];
+    
+    
     
     %Determine average shift
     rowShift = zeros(length(xVals), 1);
@@ -97,6 +107,9 @@ for n=2:1:numOfImages
     averageRowDifference(n) = mean(rowShift);
     averageColDifference(n) = mean(colShift);
     
+    %Slightly inaccurate method of defining position 
+    averageColPos(n) = mean(xVals); 
+    averageRowPos(n) = mean(yVals); 
     %Create new template
     fudgeRow = 150; fudgeCol = 150;
     
@@ -120,6 +133,7 @@ for n=2:1:numOfImages
 end
 
 %% Save displacement to file
-csvwrite('output_displacement.csv', [averageRowDifference averageColDifference]); 
+csvwrite('output_displacement.csv', ...
+    [averageRowDifference averageColDifference averageRowPos averageColPos]); 
 
 
