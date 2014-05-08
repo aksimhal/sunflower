@@ -4,21 +4,27 @@
 dbstop if error
 
 % These parameters can be moved to a config file if needed
+% Number of images to cycle through 
 numOfImages = 267;
+% Folder in which images are held 
 folder_path = 'C:\Users\anish\Documents\MATLAB\002C\';
 file_base = 'HUNT';
 file_ext = '.JPG';
 file_path = strcat(folder_path, file_base);
-height = 1080; width = 1920;
+%If true, save an image of the matches to a folder
 saveImg = true; 
 
+% Crop Parameters 
 cropStartCol = 480;
 cropEndCol = 1512;
 cropStartRow = 1;
 cropEndRow = 990;
 
+%Contains the difference in position from Frame B to Frame A
 averageRowDifference = zeros(numOfImages, 1); 
 averageColDifference = zeros(numOfImages, 1); 
+
+%Contains the Average position of the plant in each frame
 averageRowPos = zeros(numOfImages, 1); 
 averageColPos = zeros(numOfImages, 1); 
 
@@ -32,6 +38,7 @@ initialFrame = initialFrame(cropStartRow:(cropEndRow - 1), ...
 % Convert template to type 'single' for VL_FEAT 
 initialFrame = single(initialFrame);
 
+% Initial template parameters 
 templateStartRow = 410; templateEndRow = 600;
 templateStartCol = 220; templateEndCol = 670;
 
@@ -110,17 +117,18 @@ for n=2:3:numOfImages
     %Slightly inaccurate method of defining position 
     averageColPos(n) = mean(xVals); 
     averageRowPos(n) = mean(yVals); 
+   
     %Create new template
     fudgeRow = 150; fudgeCol = 150;
     
-    if ((max(yVals) - min(yVals)) < 90)
+    if ((max(yVals) - min(yVals)) < 150)
         templateStartRow = min(yVals) - round((fudgeRow - (max(yVals) - min(yVals)))/2);
         templateEndRow = max(yVals) + round((fudgeRow - (max(yVals) - min(yVals)))/2);
         templateStartRow = round(templateStartRow); 
         templateEndRow = round(templateEndRow); 
     end
     
-    if ((max(xVals) - min(xVals)) < 100)
+    if ((max(xVals) - min(xVals)) < 150)
         templateStartCol = round(min(xVals) - (fudgeCol - (max(xVals) - min(xVals)))/2);
         templateEndCol = round(max(xVals) + (fudgeCol - (max(xVals) - min(xVals)))/2);
     end

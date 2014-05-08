@@ -1,7 +1,5 @@
 README
 
-{IN PROGRESS - Code not guaranteed to work for everyone} 
+Code to track sunflower growth based on a very specific data set at UVa.  For more information, please email anish @ aks5db@virginia.edu
 
-Code to track sunflower growth.  For more information, please email anish @ simhal@virginia.edu
-
-The SIFT functions are from the VLFeat Library (vlfeat.org).  
+In order to run the code, VLFeat must be installed beforehand (vlfeat.org).  
